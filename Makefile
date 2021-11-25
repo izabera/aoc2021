@@ -1,5 +1,5 @@
-CXX = clang++
-CXXFLAGS = -fsanitize=address -Wall -Wextra -ggdb3 -std=c++17
+CXX ?= clang++
+CXXFLAGS += -fsanitize=address -Wall -Wextra -ggdb3 -std=c++17
 
 days = $(basename $(wildcard [0-9]*.cpp))
 dayobjs = $(addsuffix .o, $(days))
@@ -13,7 +13,7 @@ $(objs): base.hpp Makefile
 $(dayobjs): CPPFLAGS += -Dcurrentday=$*
 $(dayobjs): day.hpp
 
-$(addsuffix .cpp, $(shell seq 25)): %.cpp:
+$(addsuffix .cpp, $(shell seq 25)):
 	cp template $@
 
 clean:
