@@ -1,20 +1,45 @@
 #include "library.hpp"
 
-std::vector<std::string> split(const std::string& s, const std::string& delim) {
-    std::vector<std::string> vec;
-    auto len = s.size();
-
-    for (size_t start = 0u, end; start < len; start += end) {
-        end = s.find_first_of(delim, start);
-        if (end == std::string::npos)
-            end = len;
-
-        vec.push_back(s.substr(start, end));
-        start += end;
-    }
-    return vec;
+std::vector<std::string> detail::split(const std::string& s, char delim) {
+    std::stringstream ss(s);
+    std::string word;
+    std::vector<std::string> words;
+    while (std::getline(ss, word, delim))
+        words.push_back(word);
+    return words;
 }
 
-std::vector<std::string> split(const std::string& s, char delim) {
-    return split(s, std::string(1, delim));
+std::vector<uint64_t> detail::factor(uint64_t num) {
+    std::vector<uint64_t> factors;
+    for (auto factor : { 2, 3, 5, 7 }) {
+        while (num % factor == 0) {
+            num /= factor;
+            factors.push_back(factor);
+        }
+    }
+
+    // mini wheel
+    for (uint64_t factor = 11, increment = 4;
+            factor * factor <= num;
+            factor += (increment ^= 6)) {
+        while (num % factor == 0) {
+            num /= factor;
+            factors.push_back(factor);
+        }
+    }
+
+    if (num > 1)
+        factors.push_back(num);
+
+    return factors;
+}
+
+uint64_t gcd(uint64_t a, uint64_t b) {
+   if (b == 0)
+       return a;
+   return gcd(b, a % b);
+}
+
+uint64_t lcm(uint64_t a, uint64_t b) {
+    return a / gcd(a, b) * b;
 }
