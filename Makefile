@@ -1,6 +1,5 @@
 CXX = clang++
 CXXFLAGS = -fsanitize=address -Wall -Wextra -ggdb3 -std=c++17
-CPPFLAGS = -Dcurrentday=$*
 
 days = $(basename $(wildcard [0-9]*.cpp))
 dayobjs = $(addsuffix .o, $(days))
