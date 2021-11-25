@@ -1,0 +1,3 @@
+#include "day.hpp"
+ret day::part1() { return "default"; }
+ret day::part2() { return "default"; }
