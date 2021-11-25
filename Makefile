@@ -3,21 +3,19 @@ CXXFLAGS = -fsanitize=address -Wall -Wextra -ggdb3 -std=c++17
 CPPFLAGS = -Dcurrentday=$*
 
 days = $(basename $(wildcard [0-9]*.cpp))
-headers = base.hpp day.hpp
-objs = $(addsuffix .o, $(days)) main.o
-inputs = $(addsuffix .input, $(days))
+dayobjs = $(addsuffix .o, $(days))
+objs = $(dayobjs) main.o
 
 aoc: $(objs) Makefile
 	$(CXX) $(CXXFLAGS) $(objs) -o $@ $(LDFLAGS)
 
-main.o: main.cpp base.hpp Makefile
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+$(objs): base.hpp Makefile
 
-%.o: %.cpp $(headers) Makefile
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+$(dayobjs): CPPFLAGS += -Dcurrentday=$*
+$(dayobjs): day.hpp
 
-#%.cpp:
-#	cp template $@
+$(addsuffix .cpp, $(shell seq 25)): %.cpp:
+	cp template $@
 
 clean:
 	rm -rf *.o aoc
