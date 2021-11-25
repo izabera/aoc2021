@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <map>
 #include "base.hpp"
+#include "library.hpp"
 namespace {
 struct day : baseday {
     std::vector<std::string> input;
