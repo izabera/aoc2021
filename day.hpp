@@ -1,8 +1,19 @@
+#pragma once
+#include <fstream>
+#include <iterator>
+#include <algorithm>
+#include <map>
 #include "base.hpp"
 namespace {
 struct day : baseday {
-    std::vector<std::string> *input = inputs[currentday-1];
-    day() { days[currentday-1] = this; }
+    std::vector<std::string> input;
+    day() {
+        days[currentday-1] = this;
+
+        std::ifstream file(std::to_string(currentday) + ".input");
+        std::string line;
+        while (std::getline(file, line)) input.push_back(line);
+    }
     virtual ret part1();
     virtual ret part2();
 };

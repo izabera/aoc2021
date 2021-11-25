@@ -1,7 +1,7 @@
 #include "day.hpp"
 ret day::part1() {
-    return 1777;
+    return "the solution to part 1 is a string";
 }
 ret day::part2() {
-    return 2777;
+    return 777;
 }
