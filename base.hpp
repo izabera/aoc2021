@@ -11,10 +11,8 @@ using ret = std::variant<int, uint32_t, uint64_t, std::string>;
 
 struct baseday {
     void print() {
-        std::visit([](auto&& part1, auto&& part2){
-                std::cout << "part 1: " << part1 << std::endl;
-                std::cout << "part 2: " << part2 << std::endl;
-                }, part1(), part2());
+        std::visit([](auto&& arg) { std::cout << "part 1: " << arg << std::endl; }, part1());
+        std::visit([](auto&& arg) { std::cout << "part 2: " << arg << std::endl; }, part2());
     }
     virtual ret part1() = 0;
     virtual ret part2() = 0;
