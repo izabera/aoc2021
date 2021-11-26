@@ -18,4 +18,3 @@ struct baseday {
     virtual ret part2() = 0;
 };
 extern baseday *days[25];
-#define debug(x) do { std::cout << #x << "=" << (x) << std::endl; } while (0)

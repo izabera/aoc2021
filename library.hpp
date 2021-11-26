@@ -54,3 +54,50 @@ std::vector<t> split(const std::string& s, char delim = ' ') {
 }
 
 std::array<uint8_t, 16> md5(const std::string& s);
+
+#include <string_view>
+
+// https://stackoverflow.com/a/56766138/2815203
+template <typename T>
+constexpr auto type_name() {
+  std::string_view name, prefix, suffix;
+#ifdef __clang__
+  name = __PRETTY_FUNCTION__;
+  prefix = "auto type_name() [T = ";
+  suffix = "]";
+#elif defined(__GNUC__)
+  name = __PRETTY_FUNCTION__;
+  prefix = "constexpr auto type_name() [with T = ";
+  suffix = "]";
+#elif defined(_MSC_VER)
+  name = __FUNCSIG__;
+  prefix = "auto __cdecl type_name<";
+  suffix = ">(void)";
+#endif
+  name.remove_prefix(prefix.size());
+  name.remove_suffix(suffix.size());
+  return name;
+}
+
+// https://stackoverflow.com/a/49026811/2815203
+template<typename S, typename T, typename = void>
+struct is_to_stream_writable: std::false_type {};
+
+template<typename S, typename T>
+struct is_to_stream_writable<S, T,
+        std::void_t<  decltype( std::declval<S&>()<<std::declval<T>() )  > >
+: std::true_type {};
+
+template<typename T>
+std::ostream& debug(const std::string& name, T val, bool nl = true) {
+    std::cout << name << "=";
+    std::cout << "(" << type_name<T>() << ")";
+    if constexpr (is_to_stream_writable<std::ostream,T>::value)
+        std::cout << val;
+    else
+        std::cout << "<unprintable>";
+    if (nl)
+        std::cout << std::endl;
+    return std::cout;
+}
+#define debug(x, ...) debug(#x, x, ##__VA_ARGS__)
