@@ -1,5 +1,7 @@
 CXX ?= clang++
+CXXFLAGS ?= -O2
 CXXFLAGS += -fsanitize=address -Wall -Wextra -ggdb3 -std=c++17
+LDFLAGS = -lcrypto
 
 days = $(basename $(wildcard [0-9]*.cpp))
 dayobjs = $(addsuffix .o, $(days))

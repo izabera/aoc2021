@@ -1,8 +1,9 @@
 #pragma once
+#include <algorithm>
+#include <array>
+#include <sstream>
 #include <string>
 #include <vector>
-#include <algorithm>
-#include <sstream>
 
 namespace detail {
     std::vector<std::string> split(const std::string& s, char delim);
@@ -51,3 +52,5 @@ std::vector<t> split(const std::string& s, char delim = ' ') {
             });
     return dest;
 }
+
+std::array<uint8_t, 16> md5(const std::string& s);

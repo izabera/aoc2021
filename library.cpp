@@ -43,3 +43,10 @@ uint64_t gcd(uint64_t a, uint64_t b) {
 uint64_t lcm(uint64_t a, uint64_t b) {
     return a / gcd(a, b) * b;
 }
+
+#include <openssl/md5.h>
+std::array<uint8_t, 16> md5(const std::string& s) {
+    std::array<uint8_t, 16> ret;
+    MD5((uint8_t*)(s.data()), s.size(), ret.data());
+    return ret;
+}
