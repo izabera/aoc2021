@@ -24,7 +24,7 @@ t lcm(t a, t b) {
 template <typename t>
 std::vector<t> factor(t num) {
     auto vec = detail::factor(num);
-    if constexpr (std::is_same_v<t, decltype(vec)::value_type>)
+    if constexpr (std::is_same_v<t, typename decltype(vec)::value_type>)
         return vec;
 
     std::vector<t> dest;

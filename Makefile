@@ -1,4 +1,6 @@
-CXX ?= clang++
+ifeq ($(origin CXX), default)
+	CXX := clang++
+endif
 CXXFLAGS ?= -O2
 CXXFLAGS += -fsanitize=address -Wall -Wextra -ggdb3 -std=c++17
 LDFLAGS = -lcrypto
