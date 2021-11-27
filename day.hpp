@@ -1,12 +1,4 @@
 #pragma once
-#include <algorithm>
-#include <cctype>
-#include <fstream>
-#include <iterator>
-#include <map>
-#include <set>
-#include <unordered_map>
-#include <unordered_set>
 #include "base.hpp"
 #include "library.hpp"
 namespace {
