@@ -37,7 +37,7 @@ baseday *days[25];
 namespace {
     void print(size_t i) {
         if (days[i]) {
-            std::cout << "day " << std::setw(2) << i+1 << ":      ";
+            std::cout << "day " << std::setw(2) << i+1 << ":     ";
             days[i]->print();
         }
     }
