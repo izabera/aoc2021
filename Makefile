@@ -1,8 +1,7 @@
 ifeq ($(origin CXX), default)
 	CXX := clang++
 endif
-CXXFLAGS ?= -O2
-CXXFLAGS += -fsanitize=address -Wall -Wextra -ggdb3 -std=c++20
+CXXFLAGS := -O2 -fsanitize=address -Wall -Wextra -ggdb3 -std=c++20 $(CXXFLAGS)
 LDFLAGS = -lcrypto
 
 days = $(basename $(wildcard [0-9]*.cpp))
