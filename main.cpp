@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unistd.h>
 #include <iomanip>
 #include <chrono>
 #include "base.hpp"
@@ -16,12 +17,19 @@ void baseday::print() {
     auto printer = [](auto&& arg, auto part, auto time) {
         std::cout << "part " << part << ": ";
         std::cout << std::setw(10) << arg;
-        std::cout << " (" << std::fixed << time << "s)";
-        std::cout << std::endl;
+        if (isatty(1)) {
+            auto colour = time < 0.1 ? 2 :
+                          time < 0.5 ? 3 : 1;
+            std::cout << " (\x1b[3" << colour << "m" << std::fixed << std::setprecision(3) << time << "s\x1b[m)";
+        }
+        else
+            std::cout << " (" << std::fixed << std::setprecision(3) << time << "s)";
     };
 
     std::visit([time = dur1.count(), printer](auto&& arg) { printer(arg, 1, time); }, p1);
+    std::cout << "     ";
     std::visit([time = dur2.count(), printer](auto&& arg) { printer(arg, 2, time); }, p2);
+    std::cout << std::endl;
 }
 
 baseday *days[25];
@@ -29,7 +37,7 @@ baseday *days[25];
 namespace {
     void print(size_t i) {
         if (days[i]) {
-            std::cout << "day " << i+1 << "\n";
+            std::cout << "day " << std::setw(2) << i+1 << ":      ";
             days[i]->print();
         }
     }
