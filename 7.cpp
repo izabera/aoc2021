@@ -1,5 +1,6 @@
 #include "day.hpp"
 
+namespace {
 struct wire {
     std::array<char, 4> name = {};
     int value; // -1 if not set
@@ -19,7 +20,7 @@ struct wire {
     auto operator<=>(const wire& rhs) const {
         return name <=> rhs.name;
     }
-    friend std::ostream& operator<<(std::ostream& os, const wire& w) {
+    [[maybe_unused]] friend std::ostream& operator<<(std::ostream& os, const wire& w) {
         os << "{ name=" << std::string{w.name.data(), w.name.size()}.data() << ", value=" << w.value << " }";
         return os;
     }
@@ -68,54 +69,30 @@ struct op {
                arg.rhs  < rhs      ? false:
                out      < arg.out;
     }
-    friend std::ostream& operator<<(std::ostream& os, const op& o) {
+    [[maybe_unused]] friend std::ostream& operator<<(std::ostream& os, const op& o) {
         os << "{ type=" << o.names[o.type] << ", lhs=" << o.lhs << ", rhs=" << o.rhs << ", out=" << o.out << " }";
         return os;
     }
 };
 
-namespace {
-    std::set<op> instructions;
+std::set<op> instructions;
 }
 
 ret day::part1() {
     /* it's a set of instructions in which the order doesn't really matter,
      * but we can only proceed by doing operations on known values */
 
-    /*
-    input.clear();
-    input.push_back("123 -> x");
-    input.push_back("456 -> y");
-    input.push_back("x AND y -> d");
-    input.push_back("x OR y -> e");
-    input.push_back("x LSHIFT 2 -> f");
-    input.push_back("y RSHIFT 2 -> g");
-    input.push_back("NOT x -> h");
-    input.push_back("NOT y -> i");
-
-    input.push_back("d OR e -> aa");
-    input.push_back("f OR g -> ab");
-    input.push_back("h OR i -> ac");
-
-    input.push_back("aa OR ab -> ad");
-    input.push_back("ac OR ad -> a");
-    */
-
     std::set<wire> known;
     if (instructions.empty()) {
         for (auto l : input) {
             auto i = op{split(l)};
             instructions.insert(i);
-            //std::cout << "line=" << l << ", i=" << i << "\n";
         }
     }
-    //for (auto w : known) { std::cout << w << "\n"; }
-
     auto target = wire{"a"};
     auto instr = instructions;
     while (!known.contains(target)) {
         for (auto i : instr) {
-            //auto tmp = i;
             auto lhs = known.find(i.lhs);
             if (i.lhs.value == -1 && lhs != known.end())
                 i.lhs.value = lhs->value;
@@ -140,7 +117,6 @@ ret day::part1() {
             }
             else continue;
 
-            //std::cout << "resolved " << tmp << ", inserting " << i.out << "\n";
             known.insert(i.out);
             instr.erase(i);
         }

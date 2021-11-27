@@ -125,3 +125,40 @@ struct std::hash<std::pair<t1,t2>> {
         return std::hash<t1>{}(p.first) ^ std::hash<t2>{}(p.second);
     }
 };
+
+// quick implementation that doesn't do any checks
+template <typename a, typename b>
+class bidimap {
+    std::unordered_map<a,b> ab;
+    std::unordered_map<b,a> ba;
+
+   public:
+    bool contains(a aa) { return ab.contains(aa); }
+    bool contains(b bb) { return ba.contains(bb); }
+
+    void set(a aa, b bb) { ab[aa] = bb; ba[bb] = aa; }
+    void set(b bb, a aa) { ab[aa] = bb; ba[bb] = aa; }
+
+    a get(b bb) { return ba[bb]; }
+    b get(a aa) { return ab[aa]; }
+
+    auto size() { return ab.size(); }
+    auto begin() { return ab.begin(); }
+    auto end() { return ab.end(); }
+};
+
+template <typename t>
+class interning : public bidimap<t,int> {
+    int count = 0;
+   public:
+    void intern(t key) { if (!this->contains(key)) this->set(key, count++); }
+};
+
+/*
+struct graph {
+    using node = int;
+    using edge = std::pair<node, node>;
+    std::unordered_map<node, std::string>
+    std::unordered_map<edge
+};
+*/

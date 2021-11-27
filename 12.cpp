@@ -13,6 +13,7 @@ ret day::part1() {
     return sum;
 }
 
+namespace {
 // quick hacky parser for the subset of json needed for part 2
 struct json {
     std::string type = "base";
@@ -109,6 +110,7 @@ std::shared_ptr<json> parse(const std::string& data, size_t& pos) {
         }
     }
     return std::make_shared<num>(0); // not reached
+}
 }
 
 ret day::part2() {

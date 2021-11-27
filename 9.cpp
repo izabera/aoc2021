@@ -6,20 +6,17 @@ using pair = std::pair<city, city>;
 using path = std::vector<city>;
 
 std::pair<int,int> getminmaxtravels(const std::vector<std::string>& input) {
-    std::map<std::string, city> cities;
-    city citycount = 0;
+    interning<std::string> cities;
 
     std::unordered_map<pair, int> distances;
 
     for (auto l : input) {
         auto vec = split(l);
 
-        if (!cities.contains(vec[0]))
-            cities[vec[0]] = ++citycount;
-        if (!cities.contains(vec[2]))
-            cities[vec[2]] = ++citycount;
+        cities.intern(vec[0]);
+        cities.intern(vec[2]);
 
-        auto from = cities[vec[0]], to = cities[vec[2]];
+        auto from = cities.get(vec[0]), to = cities.get(vec[2]);
         auto dist = std::stoi(vec[4]);
         distances[{from,to}] = dist;
         distances[{to,from}] = dist;
