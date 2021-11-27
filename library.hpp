@@ -152,13 +152,5 @@ class interning : public bidimap<t,int> {
     int count = 0;
    public:
     void intern(t key) { if (!this->contains(key)) this->set(key, count++); }
-};
 
-/*
-struct graph {
-    using node = int;
-    using edge = std::pair<node, node>;
-    std::unordered_map<node, std::string>
-    std::unordered_map<edge
 };
-*/
