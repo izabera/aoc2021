@@ -3,6 +3,7 @@
 #include <array>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace detail {
@@ -55,8 +56,6 @@ std::vector<t> split(const std::string& s, char delim = ' ') {
 
 std::array<uint8_t, 16> md5(const std::string& s);
 
-#include <string_view>
-
 // https://stackoverflow.com/a/56766138/2815203
 template <typename T>
 constexpr auto type_name() {
@@ -77,6 +76,13 @@ constexpr auto type_name() {
   name.remove_prefix(prefix.size());
   name.remove_suffix(suffix.size());
   return name;
+}
+
+// with clang, is_to_stream_writable<std::array<char, n>> is false if this is
+// below is_to_stream_writable. no such problem with gcc
+template <size_t n>
+std::ostream& operator<<(std::ostream& os, std::array<char, n> array) {
+    return os << std::string_view{array.data(), array.size()};
 }
 
 // https://stackoverflow.com/a/49026811/2815203
