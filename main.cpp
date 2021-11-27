@@ -1,4 +1,28 @@
+#include <iostream>
+#include <iomanip>
+#include <chrono>
 #include "base.hpp"
+
+void baseday::print() {
+    auto t0 = std::chrono::system_clock::now();
+    auto p1 = part1();
+    auto t1 = std::chrono::system_clock::now();
+    auto p2 = part2();
+    auto t2 = std::chrono::system_clock::now();
+
+    std::chrono::duration<double> dur1 = t1 - t0;
+    std::chrono::duration<double> dur2 = t2 - t1;
+
+    auto printer = [](auto&& arg, auto part, auto time) {
+        std::cout << "part " << part << ": ";
+        std::cout << std::setw(10) << arg;
+        std::cout << " (" << std::fixed << time << "s)";
+        std::cout << std::endl;
+    };
+
+    std::visit([time = dur1.count(), printer](auto&& arg) { printer(arg, 1, time); }, p1);
+    std::visit([time = dur2.count(), printer](auto&& arg) { printer(arg, 2, time); }, p2);
+}
 
 baseday *days[25];
 

@@ -103,7 +103,8 @@ struct is_to_stream_writable<S, T,
 : std::true_type {};
 
 template<typename T>
-std::ostream& debug(const std::string& name, T val, bool nl = true) {
+std::ostream& debug(const std::string& name, T val, int line, bool nl = true) {
+    std::cout << line << ":";
     std::cout << name << "=";
     std::cout << "(" << type_name<T>() << ")";
     if constexpr (is_to_stream_writable<std::ostream,T>::value)
@@ -114,4 +115,4 @@ std::ostream& debug(const std::string& name, T val, bool nl = true) {
         std::cout << std::endl;
     return std::cout;
 }
-#define debug(x, ...) debug(#x, x, ##__VA_ARGS__)
+#define debug(x, ...) debug(#x, x, __LINE__, ##__VA_ARGS__)
