@@ -1,21 +1,15 @@
 #include "day.hpp"
 
 namespace {
-    using city = int;
-    using pair = std::pair<city, city>;
-    using path = std::vector<city>;
-    std::map<path, int> g_travels;
-};
+using city = int;
+using pair = std::pair<city, city>;
+using path = std::vector<city>;
 
-std::map<path, int>& getalltravels(const std::vector<std::string>& input) {
-    if (!g_travels.empty())
-        return g_travels;
-    auto& travels = g_travels;
-
+std::pair<int,int> getminmaxtravels(const std::vector<std::string>& input) {
     std::map<std::string, city> cities;
     city citycount = 0;
 
-    std::map<pair, int> distances;
+    std::unordered_map<pair, int> distances;
 
     for (auto l : input) {
         auto vec = split(l);
@@ -37,24 +31,23 @@ std::map<path, int>& getalltravels(const std::vector<std::string>& input) {
 
     std::sort(current.begin(), current.end());
 
+    int lo = std::numeric_limits<int>::max(), hi = 0;
     do {
         auto total = 0;
         for (auto i = 0u; i < current.size() -1; i++)
             total += distances[{current[i], current[i+1]}];
 
-        travels[current] = total;
+        if (total < lo) lo = total;
+        if (total > hi) hi = total;
     } while (std::next_permutation(current.begin(), current.end()));
 
-    return travels;
+    return {lo, hi};
+}
 }
 
 ret day::part1() {
-    auto travels = getalltravels(input);
-    return std::min_element(travels.begin(), travels.end(),
-            [](const auto& l, const auto& r) { return l.second < r.second; })->second;
+    return getminmaxtravels(input).first;
 }
 ret day::part2() {
-    auto travels = getalltravels(input);
-    return std::max_element(travels.begin(), travels.end(),
-            [](const auto& l, const auto& r) { return l.second < r.second; })->second;
+    return getminmaxtravels(input).second;
 }

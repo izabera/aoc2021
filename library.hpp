@@ -3,8 +3,9 @@
 #include <array>
 #include <cctype>
 #include <fstream>
-#include <iterator>
 #include <iostream>
+#include <iterator>
+#include <limits>
 #include <map>
 #include <set>
 #include <sstream>
@@ -116,3 +117,11 @@ std::ostream& debug(const std::string& name, T val, int line, bool nl = true) {
     return std::cout;
 }
 #define debug(x, ...) debug(#x, x, __LINE__, ##__VA_ARGS__)
+
+// why is this not in the standard??
+template <typename t1, typename t2>
+struct std::hash<std::pair<t1,t2>> {
+    std::size_t operator() (const std::pair<t1,t2> &p) const {
+        return std::hash<t1>{}(p.first) ^ std::hash<t2>{}(p.second);
+    }
+};
