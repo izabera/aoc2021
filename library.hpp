@@ -94,6 +94,50 @@ std::ostream& operator<<(std::ostream& os, std::array<char, n> array) {
     return os << std::string_view{array.data(), array.size()};
 }
 
+template <typename k, typename v>
+std::ostream& operator<<(std::ostream& os, const std::map<k,v>& map) {
+    os << "{";
+    auto sep = " ";
+    for (auto [key, val] : map) {
+        os << sep << key << ": " << val;
+        sep = ", ";
+    }
+    return os << " }";
+}
+
+template <typename k, typename v>
+std::ostream& operator<<(std::ostream& os, const std::unordered_map<k,v>& map) {
+    os << "{";
+    auto sep = " ";
+    for (auto [key, val] : map) {
+        os << sep << key << ": " << val;
+        sep = ", ";
+    }
+    return os << " }";
+}
+
+template <typename t>
+std::ostream& operator<<(std::ostream& os, const std::set<t>& set) {
+    os << "{";
+    auto sep = " ";
+    for (auto item : set) {
+        os << sep << item;
+        sep = ", ";
+    }
+    return os << " }";
+}
+
+template <typename t>
+std::ostream& operator<<(std::ostream& os, const std::unordered_set<t>& set) {
+    os << "{";
+    auto sep = " ";
+    for (auto item : set) {
+        os << sep << item;
+        sep = ", ";
+    }
+    return os << " }";
+}
+
 // https://stackoverflow.com/a/49026811/2815203
 template<typename S, typename T, typename = void>
 struct is_to_stream_writable: std::false_type {};
@@ -107,13 +151,16 @@ template<typename T>
 std::ostream& debug(const std::string& name, T val, int line, bool nl = true) {
     std::cout << line << ":";
     std::cout << name << "=";
+    std::cout << "\x1b[33m";
     std::cout << "(" << type_name<T>() << ")";
+    std::cout << "\x1b[32m";
     if constexpr (is_to_stream_writable<std::ostream,T>::value)
         std::cout << val;
     else
         std::cout << "<unprintable>";
     if (nl)
         std::cout << std::endl;
+    std::cout << "\x1b[m";
     return std::cout;
 }
 #define debug(x, ...) debug(#x, x, __LINE__, ##__VA_ARGS__)
