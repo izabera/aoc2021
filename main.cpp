@@ -44,6 +44,7 @@ namespace {
 }
 
 int main(int argc, char **argv) {
+    auto t0 = std::chrono::system_clock::now();
     if (argc > 1) {
         for (auto i = 1; i < argc; i++)
             print(std::stoi(argv[i])-1);
@@ -52,4 +53,7 @@ int main(int argc, char **argv) {
         for (auto i = 0u; i < sizeof(days)/sizeof*days; i++)
             print(i);
     }
+    auto t1 = std::chrono::system_clock::now();
+    std::chrono::duration<double> duration = t1 - t0;
+    std::cout << "total: " << std::fixed << std::setprecision(3) << duration.count() << "s\n";
 }
