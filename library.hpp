@@ -94,6 +94,17 @@ std::ostream& operator<<(std::ostream& os, std::array<char, n> array) {
     return os << std::string_view{array.data(), array.size()};
 }
 
+template <size_t n>
+std::ostream& operator<<(std::ostream& os, std::array<int, n> array) {
+    os << "{";
+    auto sep = " ";
+    for (auto i : array) {
+        os << sep << i;
+        sep = ", ";
+    }
+    return os << " }";
+}
+
 template <typename k, typename v>
 std::ostream& operator<<(std::ostream& os, const std::map<k,v>& map) {
     os << "{";
@@ -147,23 +158,23 @@ struct is_to_stream_writable<S, T,
         std::void_t<  decltype( std::declval<S&>()<<std::declval<T>() )  > >
 : std::true_type {};
 
-template<typename T>
+template <typename T>
 std::ostream& debug(const std::string& name, T val, int line, bool nl = true) {
     std::cout << line << ":";
     std::cout << name << "=";
     std::cout << "\x1b[33m";
-    std::cout << "(" << type_name<T>() << ")";
+    std::cout << "(" << type_name<decltype(val)>() << ")";
     std::cout << "\x1b[32m";
-    if constexpr (is_to_stream_writable<std::ostream,T>::value)
+    if constexpr (is_to_stream_writable<std::ostream,decltype(val)>::value)
         std::cout << val;
     else
         std::cout << "<unprintable>";
+    std::cout << "\x1b[m";
     if (nl)
         std::cout << std::endl;
-    std::cout << "\x1b[m";
     return std::cout;
 }
-#define debug(x, ...) debug(#x, x, __LINE__, ##__VA_ARGS__)
+#define debug(x, ...) debug(#x, (x), __LINE__, ##__VA_ARGS__)
 
 // why is this not in the standard??
 template <typename t1, typename t2>
