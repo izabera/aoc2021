@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <array>
+#include <bitset>
 #include <cctype>
 #include <fstream>
 #include <iostream>
@@ -107,6 +108,7 @@ std::ostream& operator<<(std::ostream& os, std::array<int, n> array) {
 
 template <typename k, typename v>
 std::ostream& operator<<(std::ostream& os, const std::map<k,v>& map) {
+    os << "(" << map.size() << ")";
     os << "{";
     auto sep = " ";
     for (auto [key, val] : map) {
@@ -118,6 +120,7 @@ std::ostream& operator<<(std::ostream& os, const std::map<k,v>& map) {
 
 template <typename k, typename v>
 std::ostream& operator<<(std::ostream& os, const std::unordered_map<k,v>& map) {
+    os << "(" << map.size() << ")";
     os << "{";
     auto sep = " ";
     for (auto [key, val] : map) {
@@ -129,6 +132,7 @@ std::ostream& operator<<(std::ostream& os, const std::unordered_map<k,v>& map) {
 
 template <typename t>
 std::ostream& operator<<(std::ostream& os, const std::set<t>& set) {
+    os << "(" << set.size() << ")";
     os << "{";
     auto sep = " ";
     for (auto item : set) {
@@ -140,6 +144,7 @@ std::ostream& operator<<(std::ostream& os, const std::set<t>& set) {
 
 template <typename t>
 std::ostream& operator<<(std::ostream& os, const std::unordered_set<t>& set) {
+    os << "(" << set.size() << ")";
     os << "{";
     auto sep = " ";
     for (auto item : set) {
@@ -177,12 +182,23 @@ std::ostream& debug(const std::string& name, T val, int line, bool nl = true) {
 #define debug(x, ...) debug(#x, (x), __LINE__, ##__VA_ARGS__)
 
 // why is this not in the standard??
+namespace std {
 template <typename t1, typename t2>
-struct std::hash<std::pair<t1,t2>> {
-    std::size_t operator() (const std::pair<t1,t2> &p) const {
-        return std::hash<t1>{}(p.first) ^ std::hash<t2>{}(p.second);
+struct hash<pair<t1,t2>> {
+    size_t operator() (const pair<t1,t2> &p) const {
+        return hash<t1>{}(p.first) ^ hash<t2>{}(p.second);
     }
 };
+template <size_t N>
+bool operator<(const bitset<N>& x, const bitset<N>& y) {
+    for (int i = N-1; i >= 0; i--) {
+        if (x[i] && !y[i]) return false;
+        if (!x[i] && y[i]) return true;
+    }
+    return false;
+}
+}
+
 
 // quick implementation that doesn't do any checks
 template <typename a, typename b>
