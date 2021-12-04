@@ -4,13 +4,16 @@ constexpr int size = 5;
 class board {
     int bingo[size][size];
     int colhits[size] = {0}, rowhits[size] = {0};
+    std::unordered_map<int, std::pair<int,int>> map;
 
    public:
     board(const std::vector<std::string>& vec, size_t from) {
-        for (auto i = 0u; i < size; i++) {
+        for (auto i = 0; i < size; i++) {
             auto nums = split<int>(vec[i+from]);
-            for (auto j = 0; j < size; j++)
+            for (auto j = 0; j < size; j++) {
                 bingo[i][j] = nums[j];
+                map[nums[j]] = {i,j};
+            }
         }
     }
 
@@ -18,22 +21,17 @@ class board {
         int sum = 0;
         for (auto i = 0; i < size; i++)
             for (auto j = 0; j < size; j++)
-                sum += bingo[i][j] == -1 ? 0 : bingo[i][j];
+                sum += bingo[i][j];
         return sum;
     }
 
     bool playnum(int n) {
-        for (auto i = 0; i < size; i++) {
-            for (auto j = 0; j < size; j++) {
-                if (bingo[i][j] == n) {
-                    bingo[i][j] = -1;
-
-                    // only check if we won after finding the right cell
-                    if (++colhits[i] == size) return true;
-                    if (++rowhits[j] == size) return true;
-                    return false;
-                }
-            }
+        auto it = map.find(n);
+        if (it != map.end()) {
+            auto [i, j] = it->second;
+            bingo[i][j] = 0;
+            if (++colhits[i] == size) return true;
+            if (++rowhits[j] == size) return true;
         }
         return false;
     }
