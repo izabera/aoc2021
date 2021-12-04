@@ -14,6 +14,7 @@
 #include <string_view>
 #include <unordered_map>
 #include <unordered_set>
+#include <unistd.h>
 #include <vector>
 
 namespace detail {
@@ -47,20 +48,27 @@ std::vector<t> factor(t num) {
 
 template <typename t = std::string>
 std::vector<t> split(const std::string& s, char delim = ' ') {
-    auto vec = detail::split(s, delim);
+    if constexpr (std::is_same_v<t, std::string>) {
+        return detail::split(s, delim);
+    }
 
-    if constexpr (std::is_same_v<t, std::string>)
-        return vec;
-
+    // if delim is a space and we're splitting into something other than strings, we probably want to ignore any repeated spaces
     std::vector<t> dest;
-    dest.reserve(vec.size());
-
-    std::transform(vec.begin(), vec.end(), std::back_inserter(dest),
-            [](auto s) {
-                t ret;
-                std::istringstream(s) >> ret;
-                return ret;
-            });
+    if (delim == ' ') {
+        std::istringstream is(s);
+        t tmp;
+        while (is >> tmp)
+            dest.push_back(tmp);
+    }
+    else {
+        auto vec = detail::split(s, delim);
+        std::transform(vec.begin(), vec.end(), std::back_inserter(dest),
+                [](auto s) {
+                    t ret;
+                    std::istringstream(s) >> ret;
+                    return ret;
+                });
+    }
     return dest;
 }
 
@@ -100,6 +108,17 @@ std::ostream& operator<<(std::ostream& os, std::array<int, n> array) {
     os << "{";
     auto sep = " ";
     for (auto i : array) {
+        os << sep << i;
+        sep = ", ";
+    }
+    return os << " }";
+}
+
+template <typename t>
+std::ostream& operator<<(std::ostream& os, std::vector<t> vec) {
+    os << "{";
+    auto sep = " ";
+    for (auto i : vec) {
         os << sep << i;
         sep = ", ";
     }
@@ -154,6 +173,11 @@ std::ostream& operator<<(std::ostream& os, const std::unordered_set<t>& set) {
     return os << " }";
 }
 
+template <typename t1, typename t2>
+std::ostream& operator<<(std::ostream& os, std::pair<t1, t2> pair) {
+    return os << "{" << pair.first << "," << pair.second << "}";
+}
+
 // https://stackoverflow.com/a/49026811/2815203
 template<typename S, typename T, typename = void>
 struct is_to_stream_writable: std::false_type {};
@@ -164,27 +188,28 @@ struct is_to_stream_writable<S, T,
 : std::true_type {};
 
 template <typename T>
-std::ostream& debug(const std::string& name, T val, int line, bool nl = true) {
+std::ostream& debug(int line, const std::string& name, T val) {
+    bool tty = isatty(1);
+
     std::cout << line << ":";
     std::cout << name << "=";
-    std::cout << "\x1b[33m";
+    if (tty) std::cout << "\x1b[33m";
     std::cout << "(" << type_name<decltype(val)>() << ")";
-    std::cout << "\x1b[32m";
+    if (tty) std::cout << "\x1b[32m";
     if constexpr (is_to_stream_writable<std::ostream,decltype(val)>::value)
         std::cout << val;
     else
         std::cout << "<unprintable>";
-    std::cout << "\x1b[m";
-    if (nl)
-        std::cout << std::endl;
+    if (tty) std::cout << "\x1b[m";
+    std::cout << std::endl;
     return std::cout;
 }
-#define debug(x, ...) debug(#x, (x), __LINE__, ##__VA_ARGS__)
+#define debug(...) debug(__LINE__, #__VA_ARGS__, (__VA_ARGS__))
 
 // why is this not in the standard??
 namespace std {
 template <typename t1, typename t2>
-struct hash<pair<t1,t2>> {
+struct hash <pair<t1,t2>> {
     size_t operator() (const pair<t1,t2> &p) const {
         return hash<t1>{}(p.first) ^ hash<t2>{}(p.second);
     }
@@ -198,7 +223,6 @@ bool operator<(const bitset<N>& x, const bitset<N>& y) {
     return false;
 }
 }
-
 
 // quick implementation that doesn't do any checks
 template <typename a, typename b>
@@ -226,5 +250,4 @@ class interning : public bidimap<t,int> {
     int count = 0;
    public:
     void intern(t key) { if (!this->contains(key)) this->set(key, count++); }
-
 };
