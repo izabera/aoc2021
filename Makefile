@@ -1,8 +1,8 @@
 ifeq ($(origin CXX), default)
 	CXX := clang++
 endif
-CXXFLAGS := -O2 -fsanitize=address -Wall -Wextra -ggdb3 -std=c++20 $(CXXFLAGS)
-LDFLAGS = -lcrypto
+CXXFLAGS := -Ofast -march=native -fsanitize=address -Wall -Wextra -ggdb3 -std=c++20 -pthread $(CXXFLAGS)
+LDFLAGS = -lcrypto -march=native -pthread -ltbb
 
 days = $(basename $(wildcard [0-9]*.cpp))
 dayobjs = $(addsuffix .o, $(days))
