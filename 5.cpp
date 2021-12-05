@@ -9,14 +9,15 @@ ret day::part1() {
         auto b = split<int>(xy[2], ',');
         int x0 = a[0], y0 = a[1], x1 = b[0], y1 = b[1];
 
-        if (x0 == x1) {
-            auto [from, to] = std::minmax(y0, y1);
-            for (auto i = from; i <= to; i++)
-                grid[x0][i]++;
-        } else if (y0 == y1) {
-            auto [from, to] = std::minmax(x0, x1);
-            for (auto i = from; i <= to; i++)
-                grid[i][y0]++;
+        int dx = std::clamp(x1 - x0, -1, 1), dy = std::clamp(y1 - y0, -1, 1);
+
+        if (dx == 0 || dy == 0) {
+            while (x0 != x1 || y0 != y1) {
+                grid[x0][y0]++;
+                x0 += dx;
+                y0 += dy;
+            }
+            grid[x0][y0]++;
         }
     }
 
@@ -37,28 +38,17 @@ ret day::part2() {
         auto xy = split(l);
         auto a = split<int>(xy[0], ',');
         auto b = split<int>(xy[2], ',');
+
         int x0 = a[0], y0 = a[1], x1 = b[0], y1 = b[1];
 
-        if (x0 == x1) {
-            auto [from, to] = std::minmax(y0, y1);
-            for (auto i = from; i <= to; i++)
-                grid[x0][i]++;
-        } else if (y0 == y1) {
-            auto [from, to] = std::minmax(x0, x1);
-            for (auto i = from; i <= to; i++)
-                grid[i][y0]++;
-        } else if (std::abs(x0 - x1) == std::abs(y0 - y1)) {
-            // always go left to right
-            if (x0 > x1) {
-                std::swap(x0, x1);
-                std::swap(y0, y1);
-            }
+        int dx = std::clamp(x1 - x0, -1, 1), dy = std::clamp(y1 - y0, -1, 1);
 
-            for (; x0 <= x1; x0++) {
-                grid[x0][y0]++;
-                y0 += y0 <= y1 ? 1 : -1;
-            }
+        while (x0 != x1 || y0 != y1) {
+            grid[x0][y0]++;
+            x0 += dx;
+            y0 += dy;
         }
+        grid[x0][y0]++;
     }
 
     int count = 0;
