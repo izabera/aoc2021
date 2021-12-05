@@ -1,7 +1,7 @@
-#include <iostream>
 #include <unistd.h>
-#include <iomanip>
 #include <chrono>
+#include <iomanip>
+#include <iostream>
 #include "base.hpp"
 
 void baseday::print() {
@@ -18,11 +18,10 @@ void baseday::print() {
         std::cout << "part " << part << ": ";
         std::cout << std::setw(10) << arg;
         if (isatty(1)) {
-            auto colour = time < 0.1 ? 2 :
-                          time < 0.5 ? 3 : 1;
-            std::cout << " (\x1b[3" << colour << "m" << std::fixed << std::setprecision(3) << time << "s\x1b[m)";
-        }
-        else
+            auto colour = time < 0.1 ? 2 : time < 0.5 ? 3 : 1;
+            std::cout << " (\x1b[3" << colour << "m" << std::fixed << std::setprecision(3) << time
+                      << "s\x1b[m)";
+        } else
             std::cout << " (" << std::fixed << std::setprecision(3) << time << "s)";
     };
 
@@ -32,25 +31,24 @@ void baseday::print() {
     std::cout << std::endl;
 }
 
-baseday *days[25];
+baseday* days[25];
 
 namespace {
-    void print(size_t i) {
-        if (days[i]) {
-            std::cout << "day " << std::setw(2) << i+1 << ":     ";
-            days[i]->print();
-        }
+void print(size_t i) {
+    if (days[i]) {
+        std::cout << "day " << std::setw(2) << i + 1 << ":     ";
+        days[i]->print();
     }
 }
+}  // namespace
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     auto t0 = std::chrono::system_clock::now();
     if (argc > 1) {
         for (auto i = 1; i < argc; i++)
-            print(std::stoi(argv[i])-1);
-    }
-    else {
-        for (auto i = 0u; i < sizeof(days)/sizeof*days; i++)
+            print(std::stoi(argv[i]) - 1);
+    } else {
+        for (auto i = 0u; i < sizeof(days) / sizeof *days; i++)
             print(i);
     }
     auto t1 = std::chrono::system_clock::now();

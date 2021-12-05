@@ -17,7 +17,7 @@ num common(std::unordered_set<num> nums) {
         ret[i] = comm[i] >= (size - comm[i]);
     return ret;
 }
-}
+}  // namespace
 
 ret day::part1() {
     std::unordered_set<num> nums;

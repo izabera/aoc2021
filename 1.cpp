@@ -18,9 +18,9 @@ ret day::part2() {
     auto b = 0;
     for (auto l : input) {
         auto c = std::stoi(l);
-        if (prev < a+b+c)
+        if (prev < a + b + c)
             incremented++;
-        prev = a+b+c;
+        prev = a + b + c;
         a = b;
         b = c;
     }

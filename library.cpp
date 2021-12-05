@@ -11,7 +11,7 @@ std::vector<std::string> detail::split(const std::string& s, char delim) {
 
 std::vector<uint64_t> detail::factor(uint64_t num) {
     std::vector<uint64_t> factors;
-    for (auto factor : { 2, 3, 5, 7 }) {
+    for (auto factor : {2, 3, 5, 7}) {
         while (num % factor == 0) {
             num /= factor;
             factors.push_back(factor);
@@ -19,9 +19,7 @@ std::vector<uint64_t> detail::factor(uint64_t num) {
     }
 
     // mini wheel
-    for (uint64_t factor = 11, increment = 4;
-            factor * factor <= num;
-            factor += (increment ^= 6)) {
+    for (uint64_t factor = 11, increment = 4; factor * factor <= num; factor += (increment ^= 6)) {
         while (num % factor == 0) {
             num /= factor;
             factors.push_back(factor);
@@ -35,9 +33,9 @@ std::vector<uint64_t> detail::factor(uint64_t num) {
 }
 
 uint64_t gcd(uint64_t a, uint64_t b) {
-   if (b == 0)
-       return a;
-   return gcd(b, a % b);
+    if (b == 0)
+        return a;
+    return gcd(b, a % b);
 }
 
 uint64_t lcm(uint64_t a, uint64_t b) {
