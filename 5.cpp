@@ -26,7 +26,7 @@ ret day::part1() {
         auto ymin = idx * size/nthreads;
         auto ymax = std::min((idx+1) * size/nthreads, size);
 
-        std::vector<uint16_t> current(size);
+        std::vector<uint32_t> current(size);
         mlock(current.data(), current.size() * sizeof current[0]);
         mlock(lines.data(), lines.size() * sizeof lines[0]);
         for (auto y = ymin; y < ymax; y++) {
@@ -91,7 +91,7 @@ ret day::part2() {
         auto ymin = idx * size/nthreads;
         auto ymax = std::min((idx+1) * size/nthreads, size);
 
-        std::vector<uint16_t> current(size);
+        std::vector<uint32_t> current(size);
         mlock(current.data(), current.size() * sizeof current[0]);
         mlock(lines.data(), lines.size() * sizeof lines[0]);
         for (auto y = ymin; y < ymax; y++) {
