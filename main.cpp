@@ -16,7 +16,7 @@ void baseday::print() {
 
     auto printer = [](auto&& arg, auto part, auto time) {
         std::cout << "part " << part << ": ";
-        std::cout << std::setw(10) << arg;
+        std::cout << std::setw(15) << arg;
         if (isatty(1)) {
             auto colour = time < 0.1 ? 2 : time < 0.5 ? 3 : 1;
             std::cout << " (\x1b[3" << colour << "m" << std::fixed << std::setprecision(3) << time
