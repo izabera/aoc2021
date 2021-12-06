@@ -1,8 +1,8 @@
 ifeq ($(origin CXX), default)
-	CXX := g++
+	CXX := clang++
 endif
-#CXXFLAGS := -Ofast -march=native -fsanitize=address -Wall -Wextra -ggdb3 -std=c++20 -pthread $(CXXFLAGS)
-CXXFLAGS := -fsanitize=address -Wall -Wextra -ggdb3 -std=c++20 -pthread $(CXXFLAGS)
+CXXFLAGS := -Ofast -march=native -fsanitize=address -Wall -Wextra -ggdb3 -std=c++20 -pthread $(CXXFLAGS)
+#CXXFLAGS := -fsanitize=address -Wall -Wextra -ggdb3 -std=c++20 -pthread $(CXXFLAGS)
 LDFLAGS = -lcrypto -march=native -pthread -ltbb
 
 days = $(basename $(wildcard [0-9]*.cpp))
