@@ -1,4 +1,5 @@
 #include "day.hpp"
+#include <sys/mman.h>
 #include <thread>
 ret day::part1() {
     const int nthreads = std::thread::hardware_concurrency();
@@ -25,8 +26,11 @@ ret day::part1() {
         auto ymin = idx * size/nthreads;
         auto ymax = std::min((idx+1) * size/nthreads, size);
 
+        std::vector<uint16_t> current(size);
+        mlock(current.data(), current.size() * sizeof current[0]);
+        mlock(lines.data(), lines.size() * sizeof lines[0]);
         for (auto y = ymin; y < ymax; y++) {
-            std::vector<uint16_t> current(size);
+            std::fill(current.begin(), current.end(), 0);
             for (auto [x0, y0, x1, y1] : lines) {
                 if (!((y0 <= y && y <= y1) || (y0 >= y && y >= y1)))
                     continue;
@@ -87,8 +91,11 @@ ret day::part2() {
         auto ymin = idx * size/nthreads;
         auto ymax = std::min((idx+1) * size/nthreads, size);
 
+        std::vector<uint16_t> current(size);
+        mlock(current.data(), current.size() * sizeof current[0]);
+        mlock(lines.data(), lines.size() * sizeof lines[0]);
         for (auto y = ymin; y < ymax; y++) {
-            std::vector<uint16_t> current(size);
+            std::fill(current.begin(), current.end(), 0);
             for (auto [x0, y0, x1, y1] : lines) {
                 if (!((y0 <= y && y <= y1) || (y0 >= y && y >= y1)))
                     continue;
